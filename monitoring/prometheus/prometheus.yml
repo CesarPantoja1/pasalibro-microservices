@@ -1,0 +1,25 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "ms-users"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["ms-users:5001"]
+        labels:
+          service: "ms-users"
+
+  - job_name: "ms-books"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["ms-books:5002"]
+        labels:
+          service: "ms-books"
+
+  - job_name: "ms-chat"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["ms-chat:5003"]
+        labels:
+          service: "ms-chat"

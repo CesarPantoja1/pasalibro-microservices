@@ -1,0 +1,96 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: cd-production
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/pasalibro
+
+jobs:
+  # ──────────────────────────────────────────────
+  # 1. Build and push Docker images to GHCR
+  # ──────────────────────────────────────────────
+  build-and-push:
+    name: Build & Push Images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        service:
+          - name: ms-users
+            context: services/ms-users
+          - name: ms-books
+            context: services/ms-books
+          - name: ms-chat
+            context: services/ms-chat
+          - name: frontend
+            context: frontend
+          - name: nginx
+            context: nginx
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_PREFIX }}-${{ matrix.service.name }}
+          tags: |
+            type=sha,prefix=
+            type=raw,value=latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.service.context }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  # ──────────────────────────────────────────────
+  # 2. Deploy notification (placeholder)
+  # ──────────────────────────────────────────────
+  deploy:
+    name: Deploy
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment placeholder
+        run: |
+          echo "============================================"
+          echo "  All images pushed to GHCR successfully."
+          echo "  Ready for deployment."
+          echo "============================================"
+          echo ""
+          echo "Images built:"
+          echo "  - ${{ env.IMAGE_PREFIX }}-ms-users:latest"
+          echo "  - ${{ env.IMAGE_PREFIX }}-ms-books:latest"
+          echo "  - ${{ env.IMAGE_PREFIX }}-ms-chat:latest"
+          echo "  - ${{ env.IMAGE_PREFIX }}-frontend:latest"
+          echo "  - ${{ env.IMAGE_PREFIX }}-nginx:latest"
+      # TODO: Add SSH deployment step or webhook trigger
+      # - name: Deploy via SSH
+      #   uses: appleboy/ssh-action@v1
+      #   with:
+      #     host: ${{ secrets.DEPLOY_HOST }}
+      #     username: ${{ secrets.DEPLOY_USER }}
+      #     key: ${{ secrets.DEPLOY_KEY }}
+      #     script: |
+      #       cd /opt/pasalibro
+      #       docker compose pull
+      #       docker compose up -d

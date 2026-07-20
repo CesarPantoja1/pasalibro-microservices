@@ -1,0 +1,109 @@
+# ============================================
+# PasaLibro — Docker Compose (DESARROLLO LOCAL)
+# ============================================
+# Uso: docker compose -f docker-compose.dev.yml up --build
+# ============================================
+# NO levanta monitoreo ni Cloudflare.
+# Todos los servicios se conectan a Azure PostgreSQL.
+# Hot-reload habilitado para frontend y backend.
+# ============================================
+
+services:
+  # ── Nginx API Gateway ─────────────────────
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: pasalibro-nginx-dev
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - ms-users
+      - ms-books
+      - ms-chat
+    restart: unless-stopped
+    networks:
+      - pasalibro-dev
+
+  # ── Frontend (React + Vite — dev server) ───
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: pasalibro-frontend-dev
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+    environment:
+      VITE_API_URL: ""
+    restart: unless-stopped
+    networks:
+      - pasalibro-dev
+
+  # ── MS-Users (Flask — dev) ────────────────
+  ms-users:
+    build:
+      context: ./services/ms-users
+      dockerfile: Dockerfile
+    container_name: pasalibro-ms-users-dev
+    volumes:
+      - ./services/ms-users:/app
+    environment:
+      FLASK_ENV: development
+      FLASK_DEBUG: "1"
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_ACCESS_TOKEN_EXPIRES: ${JWT_ACCESS_TOKEN_EXPIRES}
+      DATABASE_URL: "postgresql://${DB_USER_USERS}:${DB_PASS_USERS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?options=-csearch_path=${DB_SCHEMA_USERS}"
+      DB_SCHEMA: ${DB_SCHEMA_USERS}
+    command: flask run --host=0.0.0.0 --port=5001 --reload
+    restart: unless-stopped
+    networks:
+      - pasalibro-dev
+
+  # ── MS-Books (Flask — dev) ────────────────
+  ms-books:
+    build:
+      context: ./services/ms-books
+      dockerfile: Dockerfile
+    container_name: pasalibro-ms-books-dev
+    volumes:
+      - ./services/ms-books:/app
+    environment:
+      FLASK_ENV: development
+      FLASK_DEBUG: "1"
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      DATABASE_URL: "postgresql://${DB_USER_BOOKS}:${DB_PASS_BOOKS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?options=-csearch_path=${DB_SCHEMA_BOOKS}"
+      DB_SCHEMA: ${DB_SCHEMA_BOOKS}
+    command: flask run --host=0.0.0.0 --port=5002 --reload
+    restart: unless-stopped
+    networks:
+      - pasalibro-dev
+
+  # ── MS-Chat (Flask + SocketIO — dev) ───────
+  ms-chat:
+    build:
+      context: ./services/ms-chat
+      dockerfile: Dockerfile
+    container_name: pasalibro-ms-chat-dev
+    volumes:
+      - ./services/ms-chat:/app
+    environment:
+      FLASK_ENV: development
+      FLASK_DEBUG: "1"
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      DATABASE_URL: "postgresql://${DB_USER_CHAT}:${DB_PASS_CHAT}@${DB_HOST}:${DB_PORT}/${DB_NAME}?options=-csearch_path=${DB_SCHEMA_CHATS}"
+      DB_SCHEMA: ${DB_SCHEMA_CHATS}
+    command: python run.py
+    restart: unless-stopped
+    networks:
+      - pasalibro-dev
+
+networks:
+  pasalibro-dev:
+    driver: bridge
+
+volumes:
+  frontend-node-modules:
