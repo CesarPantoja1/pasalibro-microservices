@@ -12,6 +12,9 @@ class User(db.Model):
     role = db.Column(db.String(20), nullable=False, default='user')  # user, admin
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     def set_password(self, password):
         """Hashes the password and stores it."""
         self.password_hash = generate_password_hash(password).decode('utf-8')
