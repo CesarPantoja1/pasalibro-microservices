@@ -26,7 +26,7 @@ services:
       dockerfile: Dockerfile
     container_name: pasalibro-nginx
     ports:
-      - "80:80"
+      - "${HOST_PORT_NGINX:-9000}:80"
     depends_on:
       frontend:
         condition: service_started
@@ -124,7 +124,7 @@ services:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
     ports:
-      - "9090:9090"
+      - "${HOST_PORT_PROMETHEUS:-9001}:9090"
     restart: unless-stopped
     networks:
       - pasalibro-net
@@ -140,7 +140,7 @@ services:
       - grafana-data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
     ports:
-      - "3000:3000"
+      - "${HOST_PORT_GRAFANA:-9002}:3000"
     depends_on:
       - prometheus
     restart: unless-stopped
@@ -158,7 +158,7 @@ services:
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
     ports:
-      - "9200:9200"
+      - "${HOST_PORT_ELASTIC:-9003}:9200"
     restart: unless-stopped
     networks:
       - pasalibro-net
@@ -182,7 +182,7 @@ services:
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     ports:
-      - "5601:5601"
+      - "${HOST_PORT_KIBANA:-9004}:5601"
     depends_on:
       - elasticsearch
     restart: unless-stopped
