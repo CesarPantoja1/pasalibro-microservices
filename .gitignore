@@ -1,0 +1,76 @@
+# ============================================
+# PasaLibro Microservices — .gitignore
+# ============================================
+
+# -------------------- Entorno --------------------
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# -------------------- Python --------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# -------------------- Node / Bun --------------------
+node_modules/
+bun.lockb
+.bun/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -------------------- Frontend Build --------------------
+frontend/dist/
+frontend/build/
+frontend/.vite/
+
+# -------------------- Docker --------------------
+# No ignorar Dockerfiles ni docker-compose
+# Pero sí ignorar volúmenes locales y datos
+docker-data/
+*.tar
+
+# -------------------- IDE --------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -------------------- Monitoring Data --------------------
+monitoring/prometheus/data/
+monitoring/grafana/data/
+monitoring/elk/data/
+
+# -------------------- Logs --------------------
+*.log
+logs/
+
+# -------------------- OS --------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# -------------------- Documentos internos (no subir) --------------------
+DEVELOPERS.md
