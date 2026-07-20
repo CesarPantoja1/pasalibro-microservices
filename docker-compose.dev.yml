@@ -4,7 +4,7 @@
 # Uso: docker compose -f docker-compose.dev.yml up --build
 # ============================================
 # NO levanta monitoreo ni Cloudflare.
-# Todos los servicios se conectan a Azure PostgreSQL.
+# Todos los servicios se conectan a Azure SQL Server.
 # Hot-reload habilitado para frontend y backend.
 # ============================================
 
@@ -56,8 +56,7 @@ services:
       FLASK_DEBUG: "1"
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       JWT_ACCESS_TOKEN_EXPIRES: ${JWT_ACCESS_TOKEN_EXPIRES}
-      DATABASE_URL: "postgresql://${DB_USER_USERS}:${DB_PASS_USERS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?options=-csearch_path=${DB_SCHEMA_USERS}"
-      DB_SCHEMA: ${DB_SCHEMA_USERS}
+      DATABASE_URL: "mssql+pyodbc://${DB_USER_USERS}:${DB_PASS_USERS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?driver=ODBC+Driver+18+for+SQL+Server"
     command: flask run --host=0.0.0.0 --port=5001 --reload
     restart: unless-stopped
     networks:
@@ -75,8 +74,7 @@ services:
       FLASK_ENV: development
       FLASK_DEBUG: "1"
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      DATABASE_URL: "postgresql://${DB_USER_BOOKS}:${DB_PASS_BOOKS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?options=-csearch_path=${DB_SCHEMA_BOOKS}"
-      DB_SCHEMA: ${DB_SCHEMA_BOOKS}
+      DATABASE_URL: "mssql+pyodbc://${DB_USER_BOOKS}:${DB_PASS_BOOKS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?driver=ODBC+Driver+18+for+SQL+Server"
     command: flask run --host=0.0.0.0 --port=5002 --reload
     restart: unless-stopped
     networks:
@@ -94,8 +92,7 @@ services:
       FLASK_ENV: development
       FLASK_DEBUG: "1"
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      DATABASE_URL: "postgresql://${DB_USER_CHAT}:${DB_PASS_CHAT}@${DB_HOST}:${DB_PORT}/${DB_NAME}?options=-csearch_path=${DB_SCHEMA_CHATS}"
-      DB_SCHEMA: ${DB_SCHEMA_CHATS}
+      DATABASE_URL: "mssql+pyodbc://${DB_USER_CHAT}:${DB_PASS_CHAT}@${DB_HOST}:${DB_PORT}/${DB_NAME}?driver=ODBC+Driver+18+for+SQL+Server"
     command: python run.py
     restart: unless-stopped
     networks:

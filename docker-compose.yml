@@ -65,8 +65,7 @@ services:
       FLASK_ENV: production
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       JWT_ACCESS_TOKEN_EXPIRES: ${JWT_ACCESS_TOKEN_EXPIRES}
-      DATABASE_URL: "postgresql://${DB_USER_USERS}:${DB_PASS_USERS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?options=-csearch_path=${DB_SCHEMA_USERS}"
-      DB_SCHEMA: ${DB_SCHEMA_USERS}
+      DATABASE_URL: "mssql+pyodbc://${DB_USER_USERS}:${DB_PASS_USERS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?driver=ODBC+Driver+18+for+SQL+Server"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001/api/users/health"]
       interval: 30s
@@ -86,8 +85,7 @@ services:
     environment:
       FLASK_ENV: production
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      DATABASE_URL: "postgresql://${DB_USER_BOOKS}:${DB_PASS_BOOKS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?options=-csearch_path=${DB_SCHEMA_BOOKS}"
-      DB_SCHEMA: ${DB_SCHEMA_BOOKS}
+      DATABASE_URL: "mssql+pyodbc://${DB_USER_BOOKS}:${DB_PASS_BOOKS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?driver=ODBC+Driver+18+for+SQL+Server"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5002/api/books/health"]
       interval: 30s
@@ -107,8 +105,7 @@ services:
     environment:
       FLASK_ENV: production
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      DATABASE_URL: "postgresql://${DB_USER_CHAT}:${DB_PASS_CHAT}@${DB_HOST}:${DB_PORT}/${DB_NAME}?options=-csearch_path=${DB_SCHEMA_CHATS}"
-      DB_SCHEMA: ${DB_SCHEMA_CHATS}
+      DATABASE_URL: "mssql+pyodbc://${DB_USER_CHAT}:${DB_PASS_CHAT}@${DB_HOST}:${DB_PORT}/${DB_NAME}?driver=ODBC+Driver+18+for+SQL+Server"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5003/api/chat/health"]
       interval: 30s
