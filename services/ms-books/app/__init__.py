@@ -1,19 +1,19 @@
+import json
+import logging
+import socket
+from datetime import datetime
+
 from flask import Flask
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from prometheus_flask_exporter import PrometheusMetrics
 
 from app.config import Config
 
 db = SQLAlchemy()
 migrate = Migrate()
 
-
-import logging
-import socket
-import json
-from datetime import datetime
-from prometheus_flask_exporter import PrometheusMetrics
 
 class LogstashSocketHandler(logging.Handler):
     def __init__(self, host, port, service_name):
@@ -40,18 +40,19 @@ class LogstashSocketHandler(logging.Handler):
             # Fallback silencioso a consola si Logstash está caído
             print(f"Logstash unreachable: {e} - {log_entry['message']}")
 
+
 def setup_logging(service_name):
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
-    
+
     # Limpiar handlers previos para evitar duplicados
     if logger.hasHandlers():
         logger.handlers.clear()
-        
+
     # Handler para enviar a Logstash por TCP
     logstash_handler = LogstashSocketHandler("logstash", 5044, service_name)
     logger.addHandler(logstash_handler)
-    
+
     # Opcional: Mantener handler de consola para desarrollo local
     console_handler = logging.StreamHandler()
     logger.addHandler(console_handler)
@@ -67,10 +68,11 @@ def create_app(config_class=Config):
 
     # Observability
     setup_logging('ms-books')
-    metrics = PrometheusMetrics(app)
+    PrometheusMetrics(app)
 
     # Register blueprints
     from app.routes import books_bp
     app.register_blueprint(books_bp, url_prefix="/api/books")
 
     return app
+
