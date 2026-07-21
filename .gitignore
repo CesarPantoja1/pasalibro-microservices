@@ -73,4 +73,10 @@ logs/
 ehthumbs.db
 
 # -------------------- Documentos internos (no subir) --------------------
-DEVELOPERS.md
+# Ignorar todos los archivos Markdown
+*.md
+
+# Exceptuar los archivos principales que sí deben subirse
+!README.md
+!LICENSE.md
+!CONTRIBUTING.md

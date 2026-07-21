@@ -1,0 +1,376 @@
+/* =============================================
+   PasaLibro — UI Component Styles
+   ============================================= */
+
+/* ── Button ──────────────────────────────── */
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-4);
+  height: 38px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.ui-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.ui-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary */
+.ui-button--primary {
+  background: var(--pl-primary);
+  color: #fff;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-xs);
+}
+
+.ui-button--primary:hover:not(:disabled) {
+  background: var(--pl-primary-dark);
+  box-shadow: 0 0 0 3px var(--pl-primary-ring);
+}
+
+/* Secondary */
+.ui-button--secondary {
+  background: var(--pl-surface);
+  color: var(--pl-text);
+  border: 1px solid var(--pl-line);
+  box-shadow: var(--shadow-xs);
+}
+
+.ui-button--secondary:hover:not(:disabled) {
+  background: var(--pl-gray-50);
+  border-color: var(--pl-gray-300);
+}
+
+/* Ghost */
+.ui-button--ghost {
+  background: transparent;
+  color: var(--pl-muted);
+  border: 1px solid transparent;
+}
+
+.ui-button--ghost:hover:not(:disabled) {
+  background: var(--pl-gray-100);
+  color: var(--pl-text);
+}
+
+/* Danger */
+.ui-button--danger {
+  background: var(--pl-danger);
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+.ui-button--danger:hover:not(:disabled) {
+  background: var(--pl-danger-dark);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* Size variants */
+.ui-button--sm {
+  height: 32px;
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-xs);
+}
+
+.ui-button--lg {
+  height: 46px;
+  padding: 0 var(--space-6);
+  font-size: var(--font-size-base);
+}
+
+/* ── Input / Field ───────────────────────── */
+.ui-field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ui-field__label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--pl-text);
+}
+
+.ui-field__error {
+  font-size: var(--font-size-xs);
+  color: var(--pl-danger);
+}
+
+.ui-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--pl-line);
+  border-radius: var(--radius-md);
+  background: var(--pl-surface);
+  color: var(--pl-ink);
+  font-size: var(--font-size-sm);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  outline: none;
+}
+
+.ui-input::placeholder {
+  color: var(--pl-subtle);
+}
+
+.ui-input:focus {
+  border-color: var(--pl-primary);
+  box-shadow: 0 0 0 3px var(--pl-primary-ring);
+}
+
+.ui-input:disabled {
+  background: var(--pl-gray-50);
+  color: var(--pl-muted);
+  cursor: not-allowed;
+}
+
+.ui-input--error {
+  border-color: var(--pl-danger);
+}
+
+.ui-input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* ── Textarea ────────────────────────────── */
+.ui-textarea {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--pl-line);
+  border-radius: var(--radius-md);
+  background: var(--pl-surface);
+  color: var(--pl-ink);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  outline: none;
+  line-height: 1.6;
+}
+
+.ui-textarea::placeholder {
+  color: var(--pl-subtle);
+}
+
+.ui-textarea:focus {
+  border-color: var(--pl-primary);
+  box-shadow: 0 0 0 3px var(--pl-primary-ring);
+}
+
+/* ── Card ────────────────────────────────── */
+.ui-card {
+  background: var(--pl-surface);
+  border: 1px solid var(--pl-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.ui-card--hoverable:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.ui-card__body {
+  padding: var(--space-5);
+}
+
+.ui-card__header {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--pl-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.ui-card__footer {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--pl-line);
+  background: var(--pl-gray-50);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* ── Loader ──────────────────────────────── */
+.ui-loader {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ui-loader__spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--pl-line);
+  border-top-color: var(--pl-primary);
+  border-radius: var(--radius-full);
+  animation: pl-spin 0.65s linear infinite;
+}
+
+.ui-loader__text {
+  font-size: var(--font-size-sm);
+  color: var(--pl-muted);
+}
+
+@keyframes pl-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Modal ───────────────────────────────── */
+.ui-modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+  padding: var(--space-4);
+  animation: pl-modal-in var(--transition-fast) ease;
+}
+
+@keyframes pl-modal-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.ui-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.4);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.ui-modal__panel {
+  position: relative;
+  width: min(95vw, 480px);
+  background: var(--pl-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  z-index: 1;
+  animation: pl-panel-in var(--transition-base) ease;
+  overflow: hidden;
+}
+
+@keyframes pl-panel-in {
+  from { opacity: 0; transform: scale(0.97) translateY(6px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.ui-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-5) 0;
+}
+
+.ui-modal__title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--pl-ink);
+}
+
+.ui-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  color: var(--pl-muted);
+  font-size: 1.2rem;
+  transition: background var(--transition-base), color var(--transition-base);
+  flex-shrink: 0;
+}
+
+.ui-modal__close:hover {
+  background: var(--pl-gray-100);
+  color: var(--pl-ink);
+}
+
+.ui-modal__content {
+  padding: var(--space-4) var(--space-5) var(--space-5);
+}
+
+/* ── Badge ───────────────────────────────── */
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.ui-badge--success {
+  background: var(--pl-success-soft);
+  color: var(--pl-green-800);
+}
+
+.ui-badge--warning {
+  background: var(--pl-warning-soft);
+  color: #92400e;
+}
+
+.ui-badge--danger {
+  background: var(--pl-danger-soft);
+  color: var(--pl-danger-dark);
+}
+
+.ui-badge--info {
+  background: var(--pl-primary-soft);
+  color: var(--pl-primary-dark);
+}
+
+.ui-badge--neutral {
+  background: var(--pl-gray-100);
+  color: var(--pl-gray-600);
+}
+
+/* ── Empty State ──────────────────────────── */
+.ui-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-12) var(--space-8);
+  gap: var(--space-3);
+}
+
+.ui-empty-state__icon {
+  font-size: 2.5rem;
+  color: var(--pl-gray-300);
+  margin-bottom: var(--space-2);
+}
+
+.ui-empty-state__title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--pl-ink);
+}
+
+.ui-empty-state__description {
+  font-size: var(--font-size-sm);
+  color: var(--pl-muted);
+  max-width: 320px;
+}

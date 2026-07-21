@@ -17,7 +17,10 @@ def jwt_required(f):
 
         parts = auth_header.split()
         if len(parts) != 2 or parts[0].lower() != "bearer":
-            return jsonify({"error": "Invalid Authorization header format. Expected 'Bearer <token>'"}), 401
+            return jsonify({
+                "error": "Invalid Authorization header format. "
+                         "Expected 'Bearer <token>'"
+            }), 401
 
         token = parts[1]
 
