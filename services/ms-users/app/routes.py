@@ -85,6 +85,20 @@ def profile():
     return jsonify(user.to_dict()), 200
 
 
+@users_bp.route("/<int:user_id>", methods=["GET"])
+def get_user_public(user_id):
+    """Returns public info of a user by ID (for inter-service communication)."""
+    user = db.session.get(User, user_id) if hasattr(db.session, 'get') else User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "id": user.id,
+        "email": user.email,
+        "role": user.role
+    }), 200
+
+
 @users_bp.route("/forgot-password", methods=["POST"])
 def forgot_password():
     """Sends password reset instructions (mock for now)."""
