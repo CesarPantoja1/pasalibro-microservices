@@ -28,4 +28,9 @@ def create_app(config_class=Config):
     # Register SocketIO events
     from app import events  # noqa: F401
 
+    # Create database tables if they don't exist
+    with app.app_context():
+        from app import models  # noqa: F401
+        db.create_all()
+
     return app
