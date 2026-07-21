@@ -1,46 +1,116 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { getProfile, updateProfile } from '../../services/userService';
 import Button from '../../components/ui/Button.jsx';
 import Badge from '../../components/ui/Badge.jsx';
 import Card from '../../components/ui/Card.jsx';
 import Input from '../../components/ui/Input.jsx';
-
-const FIELDS = [
-  { label: 'Nombre',  key: 'name' },
-  { label: 'Correo',  key: 'email' },
-  { label: 'Rol',     key: 'role' },
-];
-
-/* Dato mock hasta que el backend lo provea */
-const mockData = {
-  name: 'Ana Torres',
-  email: 'ana.torres@uni.edu',
-  role: 'Estudiante',
-  status: 'Activo',
-  registeredAt: '15 ago. 2024',
-  bio: 'Estudiante de inglés interesada en intercambiar libros de lectura y preparación académica.',
-};
+import Loader from '../../components/ui/Loader.jsx';
 
 function Profile() {
+  const { user: authUser, setUser } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState(mockData);
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
+
+  const [formData, setFormData] = useState({
+    email: '',
+    role: '',
+    created_at: '',
+    newPassword: '',
+  });
+
+  // Carga inicial (se ejecuta una sola vez al montar)
+  useEffect(() => {
+    let isMounted = true;
+
+    getProfile()
+      .then((response) => {
+        if (!isMounted) return;
+        const userData = response.data;
+        setFormData({
+          email: userData.email || '',
+          role: userData.role || 'user',
+          created_at: userData.created_at || '',
+          newPassword: '',
+        });
+        setUser(userData);
+      })
+      .catch((err) => {
+        console.error('Error cargando perfil:', err);
+        if (isMounted && authUser) {
+          setFormData({
+            email: authUser.email || '',
+            role: authUser.role || 'user',
+            created_at: authUser.created_at || '',
+            newPassword: '',
+          });
+        }
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initials = useMemo(() => {
-    const n = formData.name || '';
-    return n
-      .split(' ')
-      .slice(0, 2)
-      .map((w) => w[0])
-      .join('')
-      .toUpperCase();
-  }, [formData.name]);
+    const email = formData.email || '';
+    if (!email) return 'U';
+    return email.substring(0, 2).toUpperCase();
+  }, [formData.email]);
 
-  const handleChange = (key) => (e) =>
-    setFormData((prev) => ({ ...prev, [key]: e.target.value }));
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setMessage(null);
+
+    try {
+      setSaving(true);
+      const payload = { email: formData.email };
+      if (formData.newPassword) {
+        payload.password = formData.newPassword;
+      }
+
+      const response = await updateProfile(payload);
+      const updatedUser = response.data.user;
+      setUser(updatedUser);
+      setMessage('¡Perfil actualizado con éxito!');
+      setEditing(false);
+      setFormData((prev) => ({ ...prev, newPassword: '' }));
+    } catch (err) {
+      setError(err.response?.data?.error || 'No se pudo actualizar el perfil.');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleCancel = () => {
-    setFormData(mockData);
+    if (authUser) {
+      setFormData({
+        email: authUser.email || '',
+        role: authUser.role || 'user',
+        created_at: authUser.created_at || '',
+        newPassword: '',
+      });
+    }
     setEditing(false);
+    setError(null);
   };
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem 0' }}>
+        <Loader text="Cargando perfil de usuario..." />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -50,15 +120,31 @@ function Profile() {
           <p className="page-header__eyebrow">Cuenta</p>
           <h1 className="page-header__title">Mi perfil</h1>
           <p className="page-header__subtitle">
-            Consulta y actualiza tu información personal
+            Consulta y actualiza tu información de cuenta
           </p>
         </div>
-        {!editing && (
+        {!editing ? (
           <Button variant="secondary" onClick={() => setEditing(true)}>
-            Editar perfil
+            ✏️ Editar perfil
+          </Button>
+        ) : (
+          <Button variant="ghost" onClick={handleCancel}>
+            ✕ Cancelar edición
           </Button>
         )}
       </div>
+
+      {/* Alerts */}
+      {message && (
+        <div className="alert alert--success" style={{ marginBottom: '1.25rem' }}>
+          {message}
+        </div>
+      )}
+      {error && (
+        <div className="alert alert--error" style={{ marginBottom: '1.25rem' }}>
+          {error}
+        </div>
+      )}
 
       {/* Grid */}
       <div className="profile-grid">
@@ -68,21 +154,27 @@ function Profile() {
             <div className="profile-info">
               <div className="profile-avatar">{initials}</div>
               <div>
-                <p className="profile-info__name">{formData.name}</p>
-                <p className="profile-info__email">{formData.email}</p>
+                <p className="profile-info__name">{formData.email}</p>
+                <p className="profile-info__email">ID de cuenta: #{authUser?.id || 'N/A'}</p>
                 <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-                  <Badge variant="success">{formData.status}</Badge>
-                  <Badge variant="info">{formData.role}</Badge>
+                  <Badge variant="success">Activo</Badge>
+                  <Badge variant="info">{formData.role === 'admin' ? 'Administrador' : 'Estudiante'}</Badge>
                 </div>
               </div>
             </div>
 
-            <p className="profile-bio">{formData.bio}</p>
-
-            <div style={{ marginTop: '1rem' }}>
+            <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--pl-line)' }}>
               <div className="profile-meta-row">
-                <span className="profile-meta-row__label">Registro</span>
-                <span className="profile-meta-row__value">{formData.registeredAt}</span>
+                <span className="profile-meta-row__label">Miembro desde</span>
+                <span className="profile-meta-row__value">
+                  {formData.created_at
+                    ? new Date(formData.created_at).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
+                    : 'N/A'}
+                </span>
               </div>
             </div>
           </div>
@@ -93,43 +185,54 @@ function Profile() {
           <div className="ui-card__header">
             <div>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--pl-ink)', margin: 0 }}>
-                Información personal
+                Información de la cuenta
               </h3>
               <p className="text-sm text-muted" style={{ marginTop: '2px' }}>
-                {editing ? 'Edita tus datos y guarda los cambios.' : 'Activa la edición para modificar tus datos.'}
+                {editing ? 'Modifica tu correo o contraseña y guarda las actualizaciones.' : 'Modo consulta. Presiona "Editar perfil" para hacer cambios.'}
               </p>
             </div>
           </div>
 
           <div className="ui-card__body">
-            <div className="form-stack">
-              {FIELDS.map((field) => (
-                <Input
-                  key={field.key}
-                  label={field.label}
-                  value={formData[field.key]}
-                  onChange={handleChange(field.key)}
-                  disabled={!editing}
-                />
-              ))}
+            <form onSubmit={handleSave} className="form-stack">
+              <Input
+                label="Correo Electrónico *"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                disabled={!editing}
+              />
 
-              <div className="form-actions">
-                {editing ? (
-                  <>
-                    <Button variant="primary" onClick={() => setEditing(false)}>
-                      Guardar cambios
-                    </Button>
-                    <Button variant="ghost" onClick={handleCancel}>
-                      Cancelar
-                    </Button>
-                  </>
-                ) : (
-                  <Button variant="secondary" onClick={() => setEditing(true)}>
-                    Editar
+              <Input
+                label="Rol del Sistema"
+                name="role"
+                value={formData.role === 'admin' ? 'Administrador' : 'Estudiante'}
+                disabled
+              />
+
+              {editing && (
+                <Input
+                  label="Nueva Contraseña (opcional)"
+                  name="newPassword"
+                  type="password"
+                  placeholder="Déjalo en blanco si no deseas cambiarla"
+                  value={formData.newPassword}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, newPassword: e.target.value }))}
+                />
+              )}
+
+              {editing && (
+                <div className="form-actions">
+                  <Button type="submit" variant="primary" disabled={saving}>
+                    {saving ? 'Guardando...' : 'Guardar cambios'}
                   </Button>
-                )}
-              </div>
-            </div>
+                  <Button type="button" variant="ghost" onClick={handleCancel} disabled={saving}>
+                    Cancelar
+                  </Button>
+                </div>
+              )}
+            </form>
           </div>
         </Card>
       </div>

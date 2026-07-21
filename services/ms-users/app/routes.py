@@ -85,6 +85,31 @@ def profile():
     return jsonify(user.to_dict()), 200
 
 
+@users_bp.route("/profile", methods=["PUT"])
+@jwt_required
+def update_profile():
+    """Updates the profile of the authenticated user."""
+    user = db.session.get(User, g.user_id) if hasattr(db.session, 'get') else User.query.get(g.user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json() or {}
+    if "email" in data and data["email"]:
+        existing = User.query.filter_by(email=data["email"]).first()
+        if existing and existing.id != user.id:
+            return jsonify({"error": "Email is already in use by another user"}), 409
+        user.email = data["email"]
+
+    if "password" in data and data["password"]:
+        user.set_password(data["password"])
+
+    db.session.commit()
+    return jsonify({
+        "message": "Profile updated successfully",
+        "user": user.to_dict()
+    }), 200
+
+
 @users_bp.route("/<int:user_id>", methods=["GET"])
 def get_user_public(user_id):
     """Returns public info of a user by ID (for inter-service communication)."""
