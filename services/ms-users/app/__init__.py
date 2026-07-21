@@ -77,4 +77,3 @@ def create_app(config_class=Config):
     app.register_blueprint(users_bp, url_prefix="/api/users")
 
     return app
-

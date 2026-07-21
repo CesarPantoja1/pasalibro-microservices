@@ -57,6 +57,7 @@ def setup_logging(service_name):
     console_handler = logging.StreamHandler()
     logger.addHandler(console_handler)
 
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -75,4 +76,3 @@ def create_app(config_class=Config):
     app.register_blueprint(books_bp, url_prefix="/api/books")
 
     return app
-
