@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';
 import AuthLayout from '../../components/AuthLayout';
+import { useAuth } from '../../context/AuthContext';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ const SignIn = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,10 +20,11 @@ const SignIn = () => {
     try {
       const response = await api.post('/users/login', { email, password });
       
-      const token = response.data.access_token || response.data.token;
+      const token = response.data.token || response.data.access_token;
+      const userData = response.data.user;
       
       if (token) {
-        localStorage.setItem('token', token);
+        login(token, userData);
         navigate('/dashboard');
       } else {
         setError('No se recibió token de autenticación.');

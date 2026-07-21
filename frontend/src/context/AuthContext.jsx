@@ -3,29 +3,43 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUserState] = useState(null);
+  const [user, setUserState] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [token, setTokenState] = useState(() => localStorage.getItem('token'));
   const [isAuthenticated, setIsAuthenticated] = useState(Boolean(localStorage.getItem('token')));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
+    const savedUser = localStorage.getItem('user');
 
     if (savedToken) {
       setTokenState(savedToken);
       setIsAuthenticated(true);
-      // TODO: Consultar GET /api/users/profile para obtener la información del usuario.
-      // Esta llamada se conectará con el backend más adelante.
+      if (savedUser) {
+        try {
+          setUserState(JSON.parse(savedUser));
+        } catch (e) {
+          console.error('Error parsing saved user', e);
+        }
+      }
     } else {
       setTokenState(null);
+      setUserState(null);
       setIsAuthenticated(false);
     }
 
     setLoading(false);
   }, []);
 
-  const login = (newToken) => {
+  const login = (newToken, userData) => {
     localStorage.setItem('token', newToken);
+    if (userData) {
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUserState(userData);
+    }
     setTokenState(newToken);
     setIsAuthenticated(true);
     setLoading(false);
@@ -33,6 +47,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUserState(null);
     setTokenState(null);
     setIsAuthenticated(false);
@@ -40,6 +55,11 @@ export function AuthProvider({ children }) {
   };
 
   const setUser = (nextUser) => {
+    if (nextUser) {
+      localStorage.setItem('user', JSON.stringify(nextUser));
+    } else {
+      localStorage.removeItem('user');
+    }
     setUserState(nextUser);
   };
 

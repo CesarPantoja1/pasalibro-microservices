@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getBooks, deleteBook } from '../../services/bookService';
 import { useAuth } from '../../context/AuthContext';
-import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Loader from '../../components/ui/Loader';
 import Modal from '../../components/ui/Modal';
 import EmptyState from '../../components/ui/EmptyState';
+import BookCard from '../../components/books/BookCard';
 
 function Dashboard() {
   const [books, setBooks] = useState([]);
@@ -109,48 +109,13 @@ function Dashboard() {
       ) : (
         <div className="grid-books">
           {filteredBooks.map((book) => (
-            <Card key={book.id} hoverable>
-              {/* Cover placeholder */}
-              <div className="book-card__cover">📖</div>
-
-              <div className="ui-card__body" style={{ paddingTop: '0.75rem' }}>
-                <div className="book-card">
-                  <p className="book-card__title">{book.title}</p>
-                  <p className="book-card__author">{book.author}</p>
-                  <p className="book-card__price">${book.price}</p>
-
-                  <div className="book-card__footer">
-                    <Button
-                      onClick={() => navigate(`/books/${book.id}`)}
-                      variant="secondary"
-                      size="sm"
-                      style={{ flex: 1 }}
-                    >
-                      Ver detalle
-                    </Button>
-
-                    {user && user.id === book.user_id && (
-                      <>
-                        <Button
-                          onClick={() => navigate(`/books/edit/${book.id}`)}
-                          variant="ghost"
-                          size="sm"
-                        >
-                          ✏️
-                        </Button>
-                        <Button
-                          onClick={() => confirmDelete(book)}
-                          variant="ghost"
-                          size="sm"
-                        >
-                          🗑️
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Card>
+            <BookCard
+              key={book.id}
+              book={book}
+              currentUser={user}
+              onEdit={(b) => navigate(`/books/edit/${b.id}`)}
+              onDelete={confirmDelete}
+            />
           ))}
         </div>
       )}

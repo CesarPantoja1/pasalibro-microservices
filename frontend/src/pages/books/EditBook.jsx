@@ -21,26 +21,26 @@ function EditBook() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        setLoading(true);
+        const response = await getBookById(id);
+        const book = response.data;
+        setFormData({
+          title: book.title || '',
+          author: book.author || '',
+          description: book.description || '',
+          price: book.price || '',
+        });
+      } catch {
+        setError('No se pudo cargar la información del libro.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchBook();
   }, [id]);
-
-  const fetchBook = async () => {
-    try {
-      setLoading(true);
-      const response = await getBookById(id);
-      const book = response.data;
-      setFormData({
-        title: book.title || '',
-        author: book.author || '',
-        description: book.description || '',
-        price: book.price || '',
-      });
-    } catch {
-      setError('No se pudo cargar la información del libro.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
