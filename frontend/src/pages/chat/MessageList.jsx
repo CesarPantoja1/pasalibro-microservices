@@ -12,12 +12,19 @@ function MessageList({ messages = [], currentUserId }) {
 
   const formatTime = (isoDate) => {
     if (!isoDate) return '';
-    return new Date(isoDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    // Asegurarse de que se trata como UTC añadiendo la "Z" si no la tiene
+    const date = new Date(isoDate.endsWith('Z') ? isoDate : `${isoDate}Z`);
+    // Formato consistente 12h: "12:56 a.m."
+    return date.toLocaleTimeString('es-ES', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
   };
 
   if (messages.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="chat-messages chat-messages--empty">
         <EmptyState
           title="No hay mensajes"
           description="Escribe el primer mensaje para iniciar la conversación."
@@ -27,26 +34,18 @@ function MessageList({ messages = [], currentUserId }) {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
+    <div className="chat-messages">
       {messages.map((message) => {
         const isOwn = message.sender_id === currentUserId;
 
         return (
           <div
             key={message.id || `temp-${Math.random()}`}
-            className={`flex w-full ${isOwn ? 'justify-end' : 'justify-start'}`}
+            className={`chat-message-row${isOwn ? ' chat-message-row--own' : ''}`}
           >
-            <div 
-              className={`max-w-[75%] px-4 py-2 flex flex-col shadow-sm ${
-                isOwn 
-                  ? 'bg-emerald-700 text-white rounded-2xl rounded-tr-sm' 
-                  : 'bg-white text-gray-800 border border-gray-200 rounded-2xl rounded-tl-sm'
-              }`}
-            >
-              <p className="text-[15px] leading-relaxed break-words">{message.content}</p>
-              <span className={`text-[11px] self-end mt-1 ${isOwn ? 'text-emerald-100/90' : 'text-gray-400'}`}>
-                {formatTime(message.created_at)}
-              </span>
+            <div className={`chat-bubble${isOwn ? ' chat-bubble--own' : ' chat-bubble--other'}`}>
+              <p className="chat-bubble__text">{message.content}</p>
+              <span className="chat-bubble__time">{formatTime(message.created_at)}</span>
             </div>
           </div>
         );

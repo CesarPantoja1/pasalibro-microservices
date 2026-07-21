@@ -138,18 +138,17 @@ function Chat() {
   };
 
   return (
-    <div className="flex flex-col h-[85vh] w-full max-w-7xl mx-auto py-6">
-      <div className="mb-4">
-        <span className="text-emerald-600 font-semibold text-sm uppercase tracking-wider">Mensajes</span>
-        <h1 className="text-3xl font-bold text-gray-900 mt-1">Chat</h1>
-        <p className="text-gray-500 mt-1">Coordina la entrega de tus libros directamente con otros usuarios.</p>
+    <div className="chat-page">
+      <div className="chat-page__eyebrow-wrap">
+        <span className="chat-page__eyebrow">Mensajes</span>
+        <h1>Chat</h1>
+        <p>Coordina la entrega de tus libros directamente con otros usuarios.</p>
       </div>
 
-      <div className="flex gap-6 flex-1 min-h-0">
-        {/* Columna Izquierda */}
-        <Card className="w-1/3 flex flex-col overflow-hidden bg-white shadow-sm border border-gray-200 rounded-xl">
+      <div className="chat-page__grid">
+        <Card className="chat-sidebar">
           {loadingRooms ? (
-            <div className="p-8 text-center">
+            <div className="chat-panel__empty">
               <Loader text="Cargando..." />
             </div>
           ) : (
@@ -160,68 +159,56 @@ function Chat() {
           )}
         </Card>
 
-        {/* Columna Derecha */}
-        <Card className="flex-1 flex flex-col overflow-hidden bg-white shadow-sm border border-gray-200 rounded-xl">
+        <Card className="chat-panel">
           {id ? (
             activeConversation ? (
               <>
-                {/* Cabecera de la Sala */}
-                <div className="flex items-center p-4 border-b border-gray-100 bg-gray-50/50">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg mr-3">
+                <div className="chat-panel__header">
+                  <span className="chat-panel__avatar">
                     {activeConversation.name?.charAt(0)?.toUpperCase() || '?'}
-                  </div>
+                  </span>
                   <div>
-                    <h3 className="font-semibold text-gray-800">{activeConversation.name}</h3>
-                    <span className="text-xs font-medium text-emerald-600 flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 block"></span>
-                      En línea
-                    </span>
+                    <h3>{activeConversation.name}</h3>
+                    <span className="chat-panel__status">En línea</span>
                   </div>
                 </div>
 
-                {/* Lista de Mensajes */}
                 {loadingMessages ? (
-                  <div className="flex-1 flex items-center justify-center">
+                  <div className="chat-panel__empty">
                     <Loader text="Cargando mensajes..." />
                   </div>
                 ) : (
                   <MessageList messages={messages} currentUserId={user?.id} />
                 )}
 
-                {/* Barra de Input Estilizada */}
-                <div className="p-4 bg-white border-t border-gray-100 flex items-center gap-3">
+                <div className="chat-panel__input-bar">
                   <input
                     type="text"
-                    className="flex-1 border border-gray-200 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="chat-panel__input"
                     placeholder="Escribe un mensaje..."
                     value={draftMessage}
                     onChange={(event) => setDraftMessage(event.target.value)}
                     onKeyDown={handleKeyDown}
                   />
-                  <button
-                    className="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-6 py-2.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={handleSendMessage}
-                    disabled={!draftMessage.trim()}
-                  >
+                  <Button variant="primary" onClick={handleSendMessage} disabled={!draftMessage.trim()}>
                     Enviar
-                  </button>
+                  </Button>
                 </div>
               </>
             ) : (
               loadingRooms ? (
-                 <div className="flex-1 flex items-center justify-center">
+                 <div className="chat-panel__empty">
                     <Loader text="Cargando sala..." />
                  </div>
               ) : (
-                 <div className="flex-1 flex items-center justify-center text-gray-500">
+                 <div className="chat-panel__empty">
                     <p>La sala no existe o no tienes acceso.</p>
                  </div>
               )
             )
           ) : (
-            <div className="flex-1 flex items-center justify-center flex-col text-gray-400">
-              <div className="text-6xl mb-4">💬</div>
-              <p className="text-lg">Selecciona una conversación para comenzar.</p>
+            <div className="chat-panel__empty">
+              <p>Selecciona una conversación para comenzar.</p>
             </div>
           )}
         </Card>
