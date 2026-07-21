@@ -12,6 +12,7 @@ class Config:
         "postgresql://localhost:5432/pasalibro"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
 
     # Schema isolation
     DB_SCHEMA = os.environ.get("DB_SCHEMA", "schema_chats")
