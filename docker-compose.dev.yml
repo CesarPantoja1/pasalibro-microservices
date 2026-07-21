@@ -54,6 +54,7 @@ services:
     environment:
       FLASK_ENV: development
       FLASK_DEBUG: "1"
+      DEBUG_METRICS: "1"
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       JWT_ACCESS_TOKEN_EXPIRES: ${JWT_ACCESS_TOKEN_EXPIRES}
       DATABASE_URL: "mssql+pyodbc://${DB_USER_USERS}:${DB_PASS_USERS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?driver=ODBC+Driver+18+for+SQL+Server"
@@ -73,6 +74,7 @@ services:
     environment:
       FLASK_ENV: development
       FLASK_DEBUG: "1"
+      DEBUG_METRICS: "1"
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       DATABASE_URL: "mssql+pyodbc://${DB_USER_BOOKS}:${DB_PASS_BOOKS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?driver=ODBC+Driver+18+for+SQL+Server"
     command: flask run --host=0.0.0.0 --port=5002 --reload
@@ -91,6 +93,7 @@ services:
     environment:
       FLASK_ENV: development
       FLASK_DEBUG: "1"
+      DEBUG_METRICS: "1"
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       DATABASE_URL: "mssql+pyodbc://${DB_USER_CHAT}:${DB_PASS_CHAT}@${DB_HOST}:${DB_PORT}/${DB_NAME}?driver=ODBC+Driver+18+for+SQL+Server"
     command: python run.py
