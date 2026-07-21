@@ -72,7 +72,7 @@ function Dashboard() {
           <p className="page-header__eyebrow">Catálogo</p>
           <h1 className="page-header__title">Libros disponibles</h1>
           <p className="page-header__subtitle">
-            Explora los libros publicados por la comunidad
+            Explora los librossss publicados por la comunidad
           </p>
         </div>
         <Button onClick={() => navigate('/books/new')} variant="primary">
