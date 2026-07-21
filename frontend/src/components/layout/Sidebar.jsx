@@ -5,6 +5,7 @@ const links = [
   { to: '/dashboard', label: 'Catálogo',    icon: '🏠' },
   { to: '/profile',   label: 'Mi Perfil',   icon: '👤' },
   { to: '/books/new', label: 'Publicar',    icon: '➕' },
+  { to: '/chat',      label: 'Chat',        icon: '💬' },
 ];
 
 function Sidebar() {
