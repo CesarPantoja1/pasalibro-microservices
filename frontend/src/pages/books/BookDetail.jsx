@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getBookById, deleteBook } from '../../services/bookService';
+import { createRoom } from '../../services/chatService';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
@@ -173,12 +174,17 @@ function BookDetail() {
               ) : (
                 <Button
                   variant="primary"
-                  onClick={() => {
-                    const email = book.seller?.email;
-                    if (email) {
-                      window.location.href = `mailto:${email}?subject=${encodeURIComponent(`Consulta sobre libro: ${book.title}`)}`;
-                    } else {
-                      alert(`Contactando al vendedor #${book.seller_id}...`);
+                  onClick={async () => {
+                    try {
+                      const response = await createRoom({
+                        seller_id: book.seller_id,
+                        book_id: book.id
+                      });
+                      // El backend (Fase 1) retorna { ...room }
+                      navigate(`/chat/${response.data.id || response.data.room_id || response.data.RoomID}`); 
+                    } catch (err) {
+                      console.error("Error creando la sala:", err);
+                      alert("No se pudo iniciar el chat.");
                     }
                   }}
                 >

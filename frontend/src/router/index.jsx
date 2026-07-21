@@ -8,6 +8,7 @@ import EditBook from '../pages/books/EditBook.jsx';
 import Dashboard from '../pages/dashboard/Dashboard.jsx';
 import NotFound from '../pages/errors/NotFound.jsx';
 import Profile from '../pages/profile/Profile.jsx';
+import Chat from '../pages/chat/Chat.jsx';
 
 function AppRouter() {
   return (
@@ -22,6 +23,10 @@ function AppRouter() {
         <Route path="/books/new" element={<CreateBook />} />
         <Route path="/books/edit/:id" element={<EditBook />} />
         <Route path="/books/:id" element={<BookDetail />} />
+        
+        {/* Chat Routes */}
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat/:id" element={<Chat />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
