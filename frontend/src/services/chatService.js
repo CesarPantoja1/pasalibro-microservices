@@ -1,5 +1,9 @@
 import api from './api.js';
 
+export async function createRoom(payload) {
+  return api.post('/chat/rooms', payload);
+}
+
 export async function getRooms() {
   return api.get('/chat/rooms');
 }
