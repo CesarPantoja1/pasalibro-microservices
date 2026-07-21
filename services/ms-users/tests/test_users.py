@@ -1,12 +1,14 @@
 import pytest
 from app import create_app, db
 
+
 class TestConfig:
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     SECRET_KEY = "test-secret"
     DB_SCHEMA = None
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 
 @pytest.fixture
 def app():
