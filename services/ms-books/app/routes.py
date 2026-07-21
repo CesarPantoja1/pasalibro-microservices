@@ -1,9 +1,25 @@
+import os
+import requests
 from flask import Blueprint, request, jsonify, g
 from app.models import Book
 from app import db
 from app.utils import jwt_required
 
 books_bp = Blueprint("books", __name__)
+USERS_SERVICE_URL = os.environ.get("USERS_SERVICE_URL", "http://ms-users:5001/api/users")
+
+
+def fetch_seller_info(seller_id):
+    """Inter-service synchronous HTTP call to fetch user profile by ID from ms-users."""
+    if not seller_id:
+        return None
+    try:
+        resp = requests.get(f"{USERS_SERVICE_URL}/{seller_id}", timeout=2)
+        if resp.status_code == 200:
+            return resp.json()
+    except Exception as e:
+        print(f"Error communicating with ms-users for seller {seller_id}: {e}")
+    return {"id": seller_id, "email": f"vendedor_{seller_id}@pasalibro.com"}
 
 
 @books_bp.route("/health", methods=["GET"])
@@ -31,14 +47,22 @@ def get_books():
         query = query.filter((Book.title.ilike(f"%{q}%")) | (Book.author.ilike(f"%{q}%")))
 
     books = query.order_by(Book.created_at.desc()).all()
-    return jsonify([book.to_dict() for book in books]), 200
+    result = []
+    for book in books:
+        b_dict = book.to_dict()
+        b_dict["seller"] = fetch_seller_info(book.seller_id)
+        result.append(b_dict)
+
+    return jsonify(result), 200
 
 
 @books_bp.route("/<int:book_id>", methods=["GET"])
 def get_book(book_id):
     """Get details of a specific book."""
     book = Book.query.get_or_404(book_id)
-    return jsonify(book.to_dict()), 200
+    b_dict = book.to_dict()
+    b_dict["seller"] = fetch_seller_info(book.seller_id)
+    return jsonify(b_dict), 200
 
 
 @books_bp.route("/", methods=["POST"])

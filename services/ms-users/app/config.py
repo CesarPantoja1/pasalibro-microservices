@@ -5,7 +5,9 @@ class Config:
     """Base configuration for ms-users."""
 
     SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-secret-key")
-    JWT_ACCESS_TOKEN_EXPIRES = int(os.environ.get("JWT_ACCESS_TOKEN_EXPIRES", 3600))
+    JWT_ACCESS_TOKEN_EXPIRES = int(
+        os.environ.get("JWT_ACCESS_TOKEN_EXPIRES", 3600)
+    )
 
     # Database
     SQLALCHEMY_DATABASE_URI = os.environ.get(

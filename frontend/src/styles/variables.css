@@ -1,0 +1,97 @@
+/* =============================================
+   PasaLibro — Design System Variables
+   Paleta: Blanco + Verde Teal
+   ============================================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Colores primarios */
+  --pl-green-900: #064e3b;
+  --pl-green-800: #065f46;
+  --pl-green-700: #047857;
+  --pl-green-600: #059669;
+  --pl-green-500: #10b981;
+  --pl-green-400: #34d399;
+  --pl-green-100: #d1fae5;
+  --pl-green-50:  #ecfdf5;
+
+  /* Neutrales */
+  --pl-gray-900: #111827;
+  --pl-gray-800: #1f2937;
+  --pl-gray-700: #374151;
+  --pl-gray-600: #4b5563;
+  --pl-gray-500: #6b7280;
+  --pl-gray-400: #9ca3af;
+  --pl-gray-300: #d1d5db;
+  --pl-gray-200: #e5e7eb;
+  --pl-gray-100: #f3f4f6;
+  --pl-gray-50:  #f9fafb;
+  --pl-white:    #ffffff;
+
+  /* Semánticos */
+  --pl-primary:       var(--pl-green-600);
+  --pl-primary-dark:  var(--pl-green-700);
+  --pl-primary-light: var(--pl-green-500);
+  --pl-primary-soft:  var(--pl-green-50);
+  --pl-primary-ring:  rgba(16, 185, 129, 0.25);
+
+  --pl-ink:     var(--pl-gray-900);
+  --pl-text:    var(--pl-gray-700);
+  --pl-muted:   var(--pl-gray-500);
+  --pl-subtle:  var(--pl-gray-400);
+  --pl-line:    var(--pl-gray-200);
+  --pl-surface: var(--pl-white);
+  --pl-bg:      var(--pl-gray-50);
+
+  --pl-danger:        #ef4444;
+  --pl-danger-soft:   #fef2f2;
+  --pl-danger-dark:   #b91c1c;
+  --pl-warning:       #f59e0b;
+  --pl-warning-soft:  #fffbeb;
+  --pl-success:       var(--pl-green-600);
+  --pl-success-soft:  var(--pl-green-50);
+
+  /* Tipografía */
+  --font-sans: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-size-xs:   0.75rem;    /* 12px */
+  --font-size-sm:   0.875rem;   /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg:   1.125rem;   /* 18px */
+  --font-size-xl:   1.25rem;    /* 20px */
+  --font-size-2xl:  1.5rem;     /* 24px */
+  --font-size-3xl:  1.875rem;   /* 30px */
+
+  /* Espaciado */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Radios */
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+  --radius-full: 9999px;
+
+  /* Sombras */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.07), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.10), 0 8px 16px rgba(0, 0, 0, 0.05);
+
+  /* Transiciones */
+  --transition-fast: 120ms ease;
+  --transition-base: 180ms ease;
+  --transition-slow: 280ms ease;
+
+  /* Layout */
+  --sidebar-width: 240px;
+  --navbar-height: 64px;
+}

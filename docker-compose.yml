@@ -21,9 +21,7 @@ services:
 
   # ── Nginx API Gateway ─────────────────────
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: ghcr.io/cesarpantoja1/pasalibro-nginx:latest
     container_name: pasalibro-nginx
     ports:
       - "${HOST_PORT_NGINX:-9000}:80"
@@ -47,9 +45,7 @@ services:
 
   # ── Frontend (React + Vite — built) ────────
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ghcr.io/cesarpantoja1/pasalibro-frontend:latest
     container_name: pasalibro-frontend
     restart: unless-stopped
     networks:
@@ -57,9 +53,7 @@ services:
 
   # ── MS-Users (Flask) ──────────────────────
   ms-users:
-    build:
-      context: ./services/ms-users
-      dockerfile: Dockerfile
+    image: ghcr.io/cesarpantoja1/pasalibro-ms-users:latest
     container_name: pasalibro-ms-users
     environment:
       FLASK_ENV: production
@@ -78,9 +72,7 @@ services:
 
   # ── MS-Books (Flask) ──────────────────────
   ms-books:
-    build:
-      context: ./services/ms-books
-      dockerfile: Dockerfile
+    image: ghcr.io/cesarpantoja1/pasalibro-ms-books:latest
     container_name: pasalibro-ms-books
     environment:
       FLASK_ENV: production
@@ -98,9 +90,7 @@ services:
 
   # ── MS-Chat (Flask + SocketIO) ─────────────
   ms-chat:
-    build:
-      context: ./services/ms-chat
-      dockerfile: Dockerfile
+    image: ghcr.io/cesarpantoja1/pasalibro-ms-chat:latest
     container_name: pasalibro-ms-chat
     environment:
       FLASK_ENV: production

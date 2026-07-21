@@ -33,7 +33,9 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": "User registered successfully", "user": new_user.to_dict()}), 201
+    return jsonify(
+        {"message": "User registered successfully", "user": new_user.to_dict()}
+    ), 201
 
 
 @users_bp.route("/login", methods=["POST"])
@@ -61,7 +63,9 @@ def login():
         "exp": expiration
     }
 
-    token = jwt.encode(payload, current_app.config["SECRET_KEY"], algorithm="HS256")
+    token = jwt.encode(
+        payload, current_app.config["SECRET_KEY"], algorithm="HS256"
+    )
 
     return jsonify({
         "message": "Login successful",
@@ -79,3 +83,60 @@ def profile():
         return jsonify({"error": "User not found"}), 404
 
     return jsonify(user.to_dict()), 200
+
+
+@users_bp.route("/profile", methods=["PUT"])
+@jwt_required
+def update_profile():
+    """Updates the profile of the authenticated user."""
+    user = db.session.get(User, g.user_id) if hasattr(db.session, 'get') else User.query.get(g.user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json() or {}
+    if "email" in data and data["email"]:
+        existing = User.query.filter_by(email=data["email"]).first()
+        if existing and existing.id != user.id:
+            return jsonify({"error": "Email is already in use by another user"}), 409
+        user.email = data["email"]
+
+    if "password" in data and data["password"]:
+        user.set_password(data["password"])
+
+    db.session.commit()
+    return jsonify({
+        "message": "Profile updated successfully",
+        "user": user.to_dict()
+    }), 200
+
+
+@users_bp.route("/<int:user_id>", methods=["GET"])
+def get_user_public(user_id):
+    """Returns public info of a user by ID (for inter-service communication)."""
+    user = db.session.get(User, user_id) if hasattr(db.session, 'get') else User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "id": user.id,
+        "email": user.email,
+        "role": user.role
+    }), 200
+
+
+@users_bp.route("/forgot-password", methods=["POST"])
+def forgot_password():
+    """Sends password reset instructions (mock for now)."""
+    data = request.get_json()
+    if not data or not data.get("email"):
+        return jsonify({"error": "Email is required"}), 400
+
+    email = data.get("email")
+    User.query.filter_by(email=email).first()
+
+    # IMPORTANTE: No revelar si el email existe (seguridad)
+    # Siempre retornar 200 para evitar enumeración de usuarios
+    return jsonify({
+        "message": "If the email exists, "
+                   "password reset instructions have been sent"
+    }), 200
