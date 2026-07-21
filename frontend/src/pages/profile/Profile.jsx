@@ -4,105 +4,132 @@ import Badge from '../../components/ui/Badge.jsx';
 import Card from '../../components/ui/Card.jsx';
 import Input from '../../components/ui/Input.jsx';
 
-const mockUser = {
+const FIELDS = [
+  { label: 'Nombre',  key: 'name' },
+  { label: 'Correo',  key: 'email' },
+  { label: 'Rol',     key: 'role' },
+];
+
+/* Dato mock hasta que el backend lo provea */
+const mockData = {
   name: 'Ana Torres',
   email: 'ana.torres@uni.edu',
   role: 'Estudiante',
   status: 'Activo',
-  registeredAt: '2024-08-15',
+  registeredAt: '15 ago. 2024',
   bio: 'Estudiante de inglés interesada en intercambiar libros de lectura y preparación académica.',
 };
 
 function Profile() {
   const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState(mockUser);
+  const [formData, setFormData] = useState(mockData);
 
-  const profileFields = useMemo(
-    () => [
-      { label: 'Nombre', key: 'name' },
-      { label: 'Correo', key: 'email' },
-      { label: 'Rol', key: 'role' },
-      { label: 'Estado', key: 'status' },
-    ],
-    [],
-  );
+  const initials = useMemo(() => {
+    const n = formData.name || '';
+    return n
+      .split(' ')
+      .slice(0, 2)
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase();
+  }, [formData.name]);
 
-  const handleChange = (key) => (event) => {
-    setFormData((prev) => ({ ...prev, [key]: event.target.value }));
-  };
+  const handleChange = (key) => (e) =>
+    setFormData((prev) => ({ ...prev, [key]: e.target.value }));
 
   const handleCancel = () => {
-    setFormData(mockUser);
+    setFormData(mockData);
     setEditing(false);
   };
 
   return (
-    <div className="profile-page">
-      <div className="profile-page__header">
+    <div>
+      {/* Page header */}
+      <div className="page-header">
         <div>
-          <span className="profile-page__eyebrow">Perfil</span>
-          <h1>Mi cuenta</h1>
-          <p>Consulta y actualiza tu información personal desde esta vista.</p>
+          <p className="page-header__eyebrow">Cuenta</p>
+          <h1 className="page-header__title">Mi perfil</h1>
+          <p className="page-header__subtitle">
+            Consulta y actualiza tu información personal
+          </p>
         </div>
-
-        {!editing ? (
-          <Button variant="primary" onClick={() => setEditing(true)}>
+        {!editing && (
+          <Button variant="secondary" onClick={() => setEditing(true)}>
             Editar perfil
           </Button>
-        ) : null}
+        )}
       </div>
 
-      <div className="profile-page__grid">
-        <Card className="profile-card">
-          <div className="profile-card__avatar">AT</div>
-          <div className="profile-card__body">
-            <h2>{formData.name}</h2>
-            <p>{formData.email}</p>
-            <div className="profile-card__badges">
-              <Badge variant="success">{formData.status}</Badge>
-              <Badge variant="info">{formData.role}</Badge>
+      {/* Grid */}
+      <div className="profile-grid">
+        {/* Info card */}
+        <Card>
+          <div className="ui-card__body">
+            <div className="profile-info">
+              <div className="profile-avatar">{initials}</div>
+              <div>
+                <p className="profile-info__name">{formData.name}</p>
+                <p className="profile-info__email">{formData.email}</p>
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                  <Badge variant="success">{formData.status}</Badge>
+                  <Badge variant="info">{formData.role}</Badge>
+                </div>
+              </div>
             </div>
-            <p className="profile-card__bio">{formData.bio}</p>
-            <div className="profile-card__meta">
-              <span>Fecha de registro</span>
-              <strong>{formData.registeredAt}</strong>
+
+            <p className="profile-bio">{formData.bio}</p>
+
+            <div style={{ marginTop: '1rem' }}>
+              <div className="profile-meta-row">
+                <span className="profile-meta-row__label">Registro</span>
+                <span className="profile-meta-row__value">{formData.registeredAt}</span>
+              </div>
             </div>
           </div>
         </Card>
 
-        <Card className="profile-form-card">
-          <div className="profile-form-card__header">
-            <h3>Información personal</h3>
-            <p>Modifica tus datos básicos para la cuenta.</p>
+        {/* Edit form card */}
+        <Card>
+          <div className="ui-card__header">
+            <div>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--pl-ink)', margin: 0 }}>
+                Información personal
+              </h3>
+              <p className="text-sm text-muted" style={{ marginTop: '2px' }}>
+                {editing ? 'Edita tus datos y guarda los cambios.' : 'Activa la edición para modificar tus datos.'}
+              </p>
+            </div>
           </div>
 
-          <div className="profile-form-card__fields">
-            {profileFields.map((field) => (
-              <Input
-                key={field.key}
-                label={field.label}
-                value={formData[field.key]}
-                onChange={handleChange(field.key)}
-                disabled={!editing}
-              />
-            ))}
-          </div>
+          <div className="ui-card__body">
+            <div className="form-stack">
+              {FIELDS.map((field) => (
+                <Input
+                  key={field.key}
+                  label={field.label}
+                  value={formData[field.key]}
+                  onChange={handleChange(field.key)}
+                  disabled={!editing}
+                />
+              ))}
 
-          <div className="profile-form-card__actions">
-            {editing ? (
-              <>
-                <Button variant="primary" onClick={() => setEditing(false)}>
-                  Guardar
-                </Button>
-                <Button variant="ghost" onClick={handleCancel}>
-                  Cancelar
-                </Button>
-              </>
-            ) : (
-              <Button variant="secondary" onClick={() => setEditing(true)}>
-                Editar
-              </Button>
-            )}
+              <div className="form-actions">
+                {editing ? (
+                  <>
+                    <Button variant="primary" onClick={() => setEditing(false)}>
+                      Guardar cambios
+                    </Button>
+                    <Button variant="ghost" onClick={handleCancel}>
+                      Cancelar
+                    </Button>
+                  </>
+                ) : (
+                  <Button variant="secondary" onClick={() => setEditing(true)}>
+                    Editar
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
         </Card>
       </div>

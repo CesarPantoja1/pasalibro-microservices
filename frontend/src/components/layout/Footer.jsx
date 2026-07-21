@@ -1,10 +1,12 @@
 import React from 'react';
 
 function Footer() {
+  const year = new Date().getFullYear();
+
   return (
     <footer className="footer app-footer">
-      <p>PasaLibro © 2026</p>
-      <small>Proyecto académico - OmniDevs</small>
+      <span>© {year} PasaLibro — OmniDevs</span>
+      <span>Proyecto académico</span>
     </footer>
   );
 }

@@ -1,26 +1,34 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 function Navbar() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <nav className="navbar app-navbar" aria-label="Navegación principal">
-      <a className="app-brand" href="/profile">
-        <span className="app-brand-mark">📘</span>
+      <a className="app-brand" href="/dashboard">
+        <span className="app-brand-icon">📘</span>
         <span>PasaLibro</span>
       </a>
 
       <div className="app-nav-links" role="navigation" aria-label="Secciones principales">
-        <NavLink to="/profile" className="nav-link">
-          Perfil
+        <NavLink to="/dashboard" className="nav-link">
+          Catálogo
         </NavLink>
-        <NavLink to="/books/1" className="nav-link">
-          Libros
+        <NavLink to="/profile" className="nav-link">
+          Mi Perfil
         </NavLink>
       </div>
 
       <div className="app-nav-user">
-        <span className="nav-link app-user-chip">Usuario autenticado</span>
-        <button type="button" className="navbar__logout-btn">
+        <button type="button" className="navbar__logout-btn" onClick={handleLogout}>
           Cerrar sesión
         </button>
       </div>

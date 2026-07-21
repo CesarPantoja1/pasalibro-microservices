@@ -1,14 +1,27 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import Button from '../../components/ui/Button';
 
 function BookDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   return (
-    <main>
-      <h1>Book Detail</h1>
-      <p>Detalle del libro con id: {id}</p>
-    </main>
+    <div>
+      <div className="page-header">
+        <div>
+          <p className="page-header__eyebrow">Catálogo</p>
+          <h1 className="page-header__title">Detalle del libro</h1>
+        </div>
+        <Button variant="secondary" onClick={() => navigate('/dashboard')}>
+          ← Volver
+        </Button>
+      </div>
+
+      <p className="text-sm text-muted">
+        Vista de detalle del libro <strong>#{id}</strong> — pendiente de implementación por el equipo.
+      </p>
+    </div>
   );
 }
 

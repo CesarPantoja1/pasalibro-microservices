@@ -6,7 +6,9 @@ function Input({
   value,
   onChange,
   type = 'text',
+  name,
   error,
+  disabled = false,
   className = '',
 }) {
   return (
@@ -14,10 +16,12 @@ function Input({
       {label ? <span className="ui-field__label">{label}</span> : null}
       <input
         type={type}
+        name={name}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className={`ui-input ${error ? 'ui-input--error' : ''}`.trim()}
+        disabled={disabled}
+        className={`ui-input${error ? ' ui-input--error' : ''}`}
       />
       {error ? <span className="ui-field__error">{error}</span> : null}
     </label>
