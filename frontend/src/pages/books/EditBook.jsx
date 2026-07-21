@@ -6,6 +6,16 @@ import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import Loader from '../../components/ui/Loader';
 
+const ACADEMIC_LEVELS = [
+  'A1 - Principiante',
+  'A2 - Básico',
+  'B1 - Intermedio',
+  'B2 - Intermedio Alto',
+  'C1 - Avanzado',
+  'C2 - Maestría',
+  'Universidad / Académico',
+];
+
 function EditBook() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -15,6 +25,7 @@ function EditBook() {
     author: '',
     description: '',
     price: '',
+    academic_level: 'B1 - Intermedio',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -31,6 +42,7 @@ function EditBook() {
           author: book.author || '',
           description: book.description || '',
           price: book.price || '',
+          academic_level: book.academic_level || 'B1 - Intermedio',
         });
       } catch {
         setError('No se pudo cargar la información del libro.');
@@ -63,6 +75,7 @@ function EditBook() {
         author: formData.author,
         description: formData.description,
         price: parseFloat(formData.price),
+        academic_level: formData.academic_level,
       });
       navigate('/dashboard');
     } catch (err) {
@@ -119,6 +132,22 @@ function EditBook() {
               value={formData.author}
               onChange={handleChange}
             />
+
+            <div className="ui-field">
+              <span className="ui-field__label">Nivel Académico (Inglés)</span>
+              <select
+                name="academic_level"
+                value={formData.academic_level}
+                onChange={handleChange}
+                className="ui-input"
+              >
+                {ACADEMIC_LEVELS.map((lvl) => (
+                  <option key={lvl} value={lvl}>
+                    {lvl}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div className="ui-field">
               <span className="ui-field__label">Descripción</span>

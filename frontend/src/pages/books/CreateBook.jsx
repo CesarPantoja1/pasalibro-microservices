@@ -5,6 +5,16 @@ import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 
+const ACADEMIC_LEVELS = [
+  'A1 - Principiante',
+  'A2 - Básico',
+  'B1 - Intermedio',
+  'B2 - Intermedio Alto',
+  'C1 - Avanzado',
+  'C2 - Maestría',
+  'Universidad / Académico',
+];
+
 function CreateBook() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -12,6 +22,7 @@ function CreateBook() {
     author: '',
     description: '',
     price: '',
+    academic_level: 'B1 - Intermedio',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -37,6 +48,7 @@ function CreateBook() {
         author: formData.author,
         description: formData.description,
         price: parseFloat(formData.price),
+        academic_level: formData.academic_level,
       });
       navigate('/dashboard');
     } catch (err) {
@@ -52,7 +64,7 @@ function CreateBook() {
       <div className="page-header">
         <div>
           <p className="page-header__eyebrow">Catálogo</p>
-          <h1 className="page-header__title">Publicar un libro</h1>
+          <h1 className="page-header__title">Publicar un libro de Inglés</h1>
           <p className="page-header__subtitle">
             Comparte un libro con la comunidad de PasaLibro
           </p>
@@ -75,7 +87,7 @@ function CreateBook() {
             <Input
               label="Título del libro *"
               name="title"
-              placeholder="Ej. El Señor de los Anillos"
+              placeholder="Ej. English File Intermediate"
               value={formData.title}
               onChange={handleChange}
             />
@@ -83,16 +95,32 @@ function CreateBook() {
             <Input
               label="Autor *"
               name="author"
-              placeholder="Ej. J.R.R. Tolkien"
+              placeholder="Ej. Christina Latham-Koenig"
               value={formData.author}
               onChange={handleChange}
             />
 
             <div className="ui-field">
+              <span className="ui-field__label">Nivel Académico (Inglés)</span>
+              <select
+                name="academic_level"
+                value={formData.academic_level}
+                onChange={handleChange}
+                className="ui-input"
+              >
+                {ACADEMIC_LEVELS.map((lvl) => (
+                  <option key={lvl} value={lvl}>
+                    {lvl}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="ui-field">
               <span className="ui-field__label">Descripción</span>
               <textarea
                 name="description"
-                placeholder="Estado del libro, edición, notas..."
+                placeholder="Estado del libro, edición, notas sobre ejercicios..."
                 value={formData.description}
                 onChange={handleChange}
                 className="ui-textarea"
@@ -103,7 +131,7 @@ function CreateBook() {
               label="Precio ($) *"
               name="price"
               type="number"
-              placeholder="Ej. 12.50"
+              placeholder="Ej. 15.00"
               value={formData.price}
               onChange={handleChange}
             />

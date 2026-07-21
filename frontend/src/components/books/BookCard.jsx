@@ -14,13 +14,16 @@ function BookCard({ book, currentUser, onEdit, onDelete }) {
         {/* Visual Cover Header */}
         <div className="book-card-cover">
           <div className="book-card-cover__icon">📖</div>
-          {book.status && (
-            <div className="book-card-cover__badges">
+          <div className="book-card-cover__badges">
+            {book.academic_level && (
+              <Badge variant="info">{book.academic_level}</Badge>
+            )}
+            {book.status && (
               <Badge variant={book.status === 'available' ? 'success' : 'neutral'}>
                 {book.status === 'available' ? 'Disponible' : 'Vendido'}
               </Badge>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Content Body */}

@@ -127,6 +127,12 @@ function BookDetail() {
                 <span className="profile-meta-row__label">Autor</span>
                 <span className="profile-meta-row__value">{book.author}</span>
               </div>
+              {book.academic_level && (
+                <div className="profile-meta-row">
+                  <span className="profile-meta-row__label">Nivel académico</span>
+                  <span className="profile-meta-row__value">{book.academic_level}</span>
+                </div>
+              )}
               <div className="profile-meta-row">
                 <span className="profile-meta-row__label">Vendedor</span>
                 <span className="profile-meta-row__value">
